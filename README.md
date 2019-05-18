@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # WeAdmin
 
 基于Layui的后台管理系统前端模板 http://lovetime.gitee.io/weadmin/
@@ -63,3 +64,7 @@ http://blog.csdn.net/sj0613xz/article/details/79021890
 
 https://www.cnblogs.com/zhoushangwu/p/7891543.html
 
+=======
+# MSDevoDevelop-Front
+信息系统开发前台
+>>>>>>> 48ddbe5fb2b9e80fe9ea349f404b330280376823
