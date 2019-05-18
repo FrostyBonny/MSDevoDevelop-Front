@@ -19,7 +19,7 @@
 		<!-- 顶部开始 -->
 		<div class="container">
 			<div class="logo">
-				<a href="./index.html">WeAdmin v1.0</a>
+				<a href="./index.html">成绩管理系统</a>
 			</div>
 			<div class="left_open">
 				<!-- <i title="展开左侧栏" class="iconfont">&#xe699;</i> -->
@@ -28,14 +28,11 @@
 			</div>
 			<ul class="layui-nav right" lay-filter="">
 				<li class="layui-nav-item">
-					<a href="javascript:;">Admin</a>
+					<a id="userName" href="javascript:;"></a>
 					<dl class="layui-nav-child">
 						<!-- 二级菜单 -->
 						<dd>
-							<a onclick="WeAdminShow('个人信息','http://www.baidu.com')">个人信息</a>
-						</dd>
-						<dd>
-							<a onclick="WeAdminShow('切换帐号','./login.html')">切换帐号</a>
+							<a onclick="WeAdminShow('个人信息','./pages/personalInfo.html',localStorage.getItem('name'),600,400)">个人信息</a>
 						</dd>
 						<dd>
 							<a class="loginout" href="./login.html">退出</a>
@@ -65,53 +62,19 @@
 
 								</a>
 							</li>
-							<li>
-								<a _href="./pages/member/del.html">
-									<i class="iconfont">&#xe6a7;</i>
-									<cite>会员删除</cite>
-
-								</a>
-							</li>
-							<li>
-								<a href="javascript:;">
-									<i class="iconfont">&#xe70b;</i>
-									<cite>用户管理</cite>
-									<i class="iconfont nav_right">&#xe697;</i>
-								</a>
-								<ul class="sub-menu">
-									<li>
-										<a _href="./pages/member/addInput.html">
-											<i class="iconfont">&#xe6a7;</i>
-											<cite>输入框操作</cite>
-										</a>
-									</li>
-									<li>
-										<a _href="./pages/404.html">
-											<i class="iconfont">&#xe6a7;</i>
-											<cite>三级菜单演示</cite>
-										</a>
-									</li>
-									<li>
-										<a _href="./pages/404.html">
-											<i class="iconfont">&#xe6a7;</i>
-											<cite>导航菜单演示</cite>
-										</a>
-									</li>
-								</ul>
-							</li>
 						</ul>
 					</li>
 					<li>
 						<a href="javascript:;">
 							<i class="iconfont">&#xe705;</i>
-							<cite>文章管理</cite>
+							<cite>课程管理</cite>
 							<i class="iconfont nav_right">&#xe697;</i>
 						</a>
 						<ul class="sub-menu">
 							<li>
-								<a _href="./pages/article/list.html">
+								<a _href="./pages/course/list.html">
 									<i class="iconfont">&#xe6a7;</i>
-									<cite>文章列表</cite>
+									<cite>课程管理</cite>
 								</a>
 							</li>
 							<li>
@@ -125,14 +88,14 @@
 					<li>
 						<a href="javascript:;">
 							<i class="iconfont">&#xe723;</i>
-							<cite>订单管理</cite>
+							<cite>班级管理</cite>
 							<i class="iconfont nav_right">&#xe697;</i>
 						</a>
 						<ul class="sub-menu">
 							<li>
-								<a _href="./pages/order/list.html">
+								<a _href="./pages/class/list.html">
 									<i class="iconfont">&#xe6a7;</i>
-									<cite>订单列表</cite>
+									<cite>班级管理</cite>
 								</a>
 							</li>
 						</ul>
@@ -259,6 +222,7 @@
 			<div class="copyright">Copyright ©2018 WeAdmin v1.0 All Rights Reserved</div>
 		</div>
 		<!-- 底部结束 -->
+		<script src="./static/js/utils.js" type="text/javascript"></script>
 		<script type="text/javascript">
 //			layui扩展模块的两种加载方式-示例
 //		    layui.extend({
@@ -274,19 +238,35 @@
 			}).use('admin');
 			layui.use(['jquery','admin'], function(){
 				var $ = layui.jquery;
+				$("#userName").text(localStorage.getItem('name'))
 				$(function(){
-					var login = JSON.parse(localStorage.getItem("login"));
-					if(login){
-						if(login=0){
-							window.location.href='./login.html';
-							return false;
-						}else{
-							return false;
+					$.ajax({
+						url: BaseUrl + '/user/login',
+						method: 'GET',
+						headers: {
+							token: localStorage.getItem("token")
+						},
+						complete: function (result) {
+							var {code, data, msg} = result.responseJSON;
+							console.log(code, data, msg)
+							if(code == 0){
+							}else{
+								layer.msg(msg);
+								window.location.href='./login.html';
+							}
 						}
-					}else{
-						window.location.href='./login.html';
-						return false;
-					}
+					});
+					// if(login){
+					// 	if(login=0){
+					// 		window.location.href='./login.html';
+					// 		return false;
+					// 	}else{
+					// 		return false;
+					// 	}
+					// }else{
+					// 	window.location.href='./login.html';
+					// 	return false;
+					// }
 				});
 			});
 

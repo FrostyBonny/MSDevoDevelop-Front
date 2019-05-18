@@ -28,65 +28,22 @@
 			</div>
 		</div>
 		<div class="layui-form-item">
-			<label for="L_username" class="layui-form-label">
-				<span class="we-red">*</span>账号
+			<label for="L_classname" class="layui-form-label">
+				<span class="we-red">*</span>班级名
 			</label>
 			<div class="layui-input-inline">
-				<input type="text" id="L_username" name="username" lay-verify="required|nikename" autocomplete="off" class="layui-input">
+				<input type="text" id="L_classname" name="name" lay-verify="required" autocomplete="off" class="layui-input">
 			</div>
 		</div>
 		<div class="layui-form-item">
-			<label for="L_name" class="layui-form-label">
-				<span class="we-red">*</span>用户名
-			</label>
-			<div class="layui-input-inline">
-				<input type="text" id="L_name" name="name" lay-verify="required|name" autocomplete="off" class="layui-input">
-			</div>
-		</div>
-		<div class="layui-form-item">
-			<label for="L_phone" class="layui-form-label">
-				<span class="we-red">*</span>电话
-			</label>
-			<div class="layui-input-inline">
-				<input type="text" id="L_phone" name="phone" lay-verify="required|phone" autocomplete="" class="layui-input">
-			</div>
-		</div>
-		<div class="layui-form-item">
-			<label for="L_role" class="layui-form-label">
-				<span class="we-red">*</span>角色
-			</label>
-			<div class="layui-input-inline">
-				<input type="text" id="L_role" name="role" lay-verify="required|role" autocomplete="off" class="layui-input">
-			</div>
-		</div>
-		<div class="layui-form-item">
-			<label class="layui-form-label">班级</label>
+			<label class="layui-form-label">班主任</label>
 			<div class="layui-input-block">
-				<select id="classSelect" name="class" lay-verify="required">
+				<select id="headerSelect" name="header" lay-verify="required">
 				</select>
 			</div>
 		</div>
 		<div class="layui-form-item">
-			<label for="L_pass" class="layui-form-label">
-				<span class="we-red">*</span>密码
-			</label>
-			<div class="layui-input-inline">
-				<input type="password" id="L_pass" name="password" lay-verify="required|password" autocomplete="off" class="layui-input">
-			</div>
-			<div class="layui-form-mid layui-word-aux">
-				6到16个字符
-			</div>
-		</div>
-		<div class="layui-form-item">
-			<label for="L_repass" class="layui-form-label">
-				<span class="we-red">*</span>确认密码
-			</label>
-			<div class="layui-input-inline">
-				<input type="password" id="L_repass" name="repass" lay-verify="required|repass" autocomplete="off" class="layui-input">
-			</div>
-		</div>
-		<div class="layui-form-item">
-			<label for="L_repass" class="layui-form-label">
+			<label for="" class="layui-form-label">
 			</label>
 			<button class="layui-btn" lay-filter="add" lay-submit="">确定</button>
 		</div>
@@ -106,7 +63,7 @@
 				layer = layui.layer;
 
 		$.ajax({
-			url: BaseUrl + '/class/',
+			url: BaseUrl + '/user/user',
 			method: 'GET',
 			headers: {
 				token: localStorage.getItem("token")
@@ -115,7 +72,7 @@
 			data:{
 				"type":"all",
 				"page":1,
-				"limit":10,
+				"limit":100,
 			},
 			complete:function (result) {
 				var {code, data, msg} = result.responseJSON;
@@ -124,17 +81,17 @@
 					for(let i = 0;i < data.length;i++){
 						inner += `<option value="${data[i].id}">${data[i].name}</option>`
 					}
-					$('#classSelect').append(inner);
+					$('#headerSelect').append(inner);
 					form.render('select');
 				}else{
-					layer.msg("获取班级出错");
+					layer.msg("获取班主任出错");
 				}
 
 			}
 		})
 		// console.log($("#ID").val())
 		$.ajax({
-			url: BaseUrl + '/user/user',
+			url: BaseUrl + '/class/',
 			method: 'GET',
 			headers: {
 				token: localStorage.getItem("token")
@@ -148,14 +105,11 @@
 			},
 			complete:function (result) {
 				var {code, data, msg} = result.responseJSON;
+				console.log(data)
 				if(code == 0){
-					console.log(data)
 					form.val("userEdit", {
-						"username": data.username // "name": "value"
-						,"name":data.name
-						,"role": data.role
-						,"phone": data.phone
-						,"class": data.class
+						"name":data.name
+						,"header": data.header
 						// ,"desc": "我爱layui"
 					})
 					// form.render('select');
@@ -209,7 +163,7 @@
 			//var sex = $('input:radio[name="sex"]:checked').val();
 			var index = parent.layer.getFrameIndex(window.name);
 			$.ajax({
-				url: BaseUrl + '/user/user',
+				url: BaseUrl + '/class/',
 				method: 'POST',
 				headers: {
 					token: localStorage.getItem("token")
@@ -218,7 +172,7 @@
 				complete:function (result) {
 					let {code, data, msg} = result.responseJSON;
 					if(code == 0){
-						parent.layui.table.reload('user_table',{page:{curr:1}});
+						parent.layui.table.reload('class_table',{page:{curr:1}});
 						parent.layer.close(index);
 						parent.layer.msg("修改成功");
 					}else{

@@ -58,8 +58,7 @@
                 method: 'POST',
                 data: data.field,
                 complete: function (result) {
-                    var {code, data, msg} = result.responseJSON;
-                    console.log(code, data, msg)
+                    let {code, data, msg} = result.responseJSON;
                     if(code == 0){
                         localStorage.setItem('role',data.role)
                         localStorage.setItem('name',data.name)

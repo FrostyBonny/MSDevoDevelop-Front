@@ -39,7 +39,7 @@
                     <i class="layui-icon layui-icon-add-circle-fine"></i>添加
                 </button>
 			</div>
-			<table id="user_table" lay-filter="user_table"></table>
+			<table id="class_table" lay-filter="class_table"></table>
 		</div>
         <script type="text/html" id="operateTpl">
             <a title="编辑" lay-event="edit"  href="javascript:;">
@@ -62,7 +62,7 @@
 						,$ = layui.jquery;
                 var retData = {}
                 $.ajax({
-                    url: BaseUrl + '/class/',
+                    url: BaseUrl + '/user/user',
                     method: 'GET',
                     headers: {
                         token: localStorage.getItem("token")
@@ -78,32 +78,15 @@
                         if(code == 0){
                             retData = data
                         }else{
-                            layer.msg("获取班级出错");
+                            layer.msg("获取用户组出错");
                         }
                     }
                 });
-				// $.when(ajax1(), ajax2(), ajax3(), ajax4()).done(function(a1, a2, a3, a4){
-				// 	// the code here will be executed when all four ajax requests resolve.
-				// 	// a1, a2, a3 and a4 are lists of length 3 containing the response text,
-				// 	// status, and jqXHR object for each of the four ajax calls respectively.
-				// });
-				//
-				// function ajax1() {
-				// 	// NOTE:  This function must return the value
-				// 	//        from calling the $.ajax() method.
-				// 	return $.ajax({
-				// 		url: BaseUrl + '/user/user',
-				// 		method: 'GET',
-				// 		dataType: "json",
-				// 		data:  yourJsonData,
-				// 		...
-				// 	});
-				// }
 				table.render({
-					elem: '#user_table'
+					elem: '#class_table'
 					,height: 312
                     ,cellMinWidth: 80
-                    ,url: BaseUrl + '/user/user' //数据接口
+                    ,url: BaseUrl + '/class/' //数据接口
 					,page: true //开启分页
 					,headers: {token: localStorage.getItem('token')}
 					,where: {type:"all"} //如果无需传递额外参数，可不加该参数
@@ -111,14 +94,11 @@
                     // ,toolbar: true
 					,cols: [[ //表头
 						{field: 'id', title: 'ID', width:80, sort: true}
-						,{field: 'username', title: '账号'}
-						,{field: 'name', title: '用户名'}
-						,{field: 'phone', title: '电话'}
-						,{field: 'role', title: '角色'}
-						,{field: 'class', title: '班级', templet: function(d){
-							let name = ''
+						,{field: 'name', title: '班级名'}
+						,{field: 'header', title: '班主任', templet: function(d){
+							let name = '';
 							for(let i = 0;i < retData.length;i++){
-								if(d.class == retData[i].id){
+								if(d['header'] == retData[i].id){
 									name = retData[i].name
 									break;
 								}
@@ -129,11 +109,11 @@
                         ,{fixed: 'right',title: '操作', width:150, align:'center', toolbar: '#operateTpl'} //这里的toolbar值是模板元素的选择器
 					]]
 				});
-                table.on('tool(user_table)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+                table.on('tool(class_table)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
                     var data = obj.data; //获得当前行数据
                     var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
                     var tr = obj.tr; //获得当前行 tr 的DOM对象
-                    console.log(data)
+                    // console.log(data)
                     // if(obj.event === 'detail'){
                     //     layer.msg('ID：'+ data.id + ' 的查看操作');
                     // } else if(obj.event === 'del'){
@@ -151,7 +131,7 @@
                     } else if(layEvent === 'del'){ //删除
                         layer.confirm('真的删除行么', function(index){
                             $.ajax({
-                                url: BaseUrl + '/user/user',
+                                url: BaseUrl + '/class/',
                                 method: 'DELETE',
                                 headers: {
                                     token: localStorage.getItem("token")
@@ -172,7 +152,26 @@
                         });
                     } else if(layEvent === 'edit'){ //编辑
                         //do something
-                        WeAdminEdit('编辑','./edit.html', data.id, 600, 400)
+						layer.open({
+							type: 2,
+							area: [600 + 'px', 400 + 'px'],
+							fix: false, //不固定
+							maxmin: true,
+							shadeClose: true,
+							shade: 0.4,
+							title: "编辑",
+							content: "./edit.html",
+							success: function(layero, index) {
+								//向iframe页的id=house的元素传值  // 参考 https://yq.aliyun.com/ziliao/133150
+								var body = layer.getChildFrame('body', index);
+								body.contents().find("#ID").val(data.id);
+								body.contents().find("#L_name").val(data.name);
+								// console.log(data.id);
+							},
+							error: function(layero, index) {
+								alert("aaa");
+							}
+						});
                         //同步更新缓存对应的值
                         obj.update({
                             username: '123'

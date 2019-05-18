@@ -300,7 +300,40 @@ layui.define(['jquery', 'form', 'layer', 'element'], function(exports) {
 	    w       弹出层宽度（缺省调默认值）
 	    h       弹出层高度（缺省调默认值）
 	*/
-	window.WeAdminShow = function(title, url, w, h) {
+	window.WeAdminShow = function(title, url, name, w, h) {
+		if(title == null || title == '') {
+			title = false;
+		};
+		if(url == null || url == '') {
+			url = "404.html";
+		};
+		if(w == null || w == '') {
+			w = ($(window).width() * 0.9);
+		};
+		if(h == null || h == '') {
+			h = ($(window).height() - 50);
+		};
+		layer.open({
+			type: 2,
+			area: [w + 'px', h + 'px'],
+			fix: false, //不固定
+			maxmin: true,
+			shadeClose: true,
+			shade: 0.4,
+			title: title,
+			content: url,
+			success: function(layero, index) {
+				//向iframe页的id=house的元素传值  // 参考 https://yq.aliyun.com/ziliao/133150
+				var body = layer.getChildFrame('body', index);
+				body.contents().find("#L_username").val(name);
+				console.log(name);
+			},
+			error: function(layero, index) {
+				alert("aaa");
+			}
+		});
+	}
+	window.WeAdminAddShow = function(title, url, w, h) {
 		if(title == null || title == '') {
 			title = false;
 		};
@@ -350,7 +383,7 @@ layui.define(['jquery', 'form', 'layer', 'element'], function(exports) {
 			success: function(layero, index) {
 				//向iframe页的id=house的元素传值  // 参考 https://yq.aliyun.com/ziliao/133150
 				var body = layer.getChildFrame('body', index);
-				body.contents().find("#dataId").val(id);
+				body.contents().find("#ID").val(id);
 				console.log(id);
 			},
 			error: function(layero, index) {
