@@ -48,14 +48,14 @@
 		<div class="left-nav">
 			<div id="side-nav">
 				<ul id="nav">
-					<li>
+					<li id="1">
 						<a href="javascript:;">
 							<i class="iconfont">&#xe6b8;</i>
 							<cite>用户管理</cite>
 							<i class="iconfont nav_right">&#xe697;</i>
 						</a>
 						<ul class="sub-menu">
-							<li>
+							<li id="1-1">
 								<a _href="./pages/member/list.html">
 									<i class="iconfont">&#xe6a7;</i>
 									<cite>用户管理</cite>
@@ -64,20 +64,20 @@
 							</li>
 						</ul>
 					</li>
-					<li>
+					<li id="2">
 						<a href="javascript:;">
 							<i class="iconfont">&#xe705;</i>
 							<cite>课程管理</cite>
 							<i class="iconfont nav_right">&#xe697;</i>
 						</a>
 						<ul class="sub-menu">
-							<li>
+							<li id="2-1">
 								<a _href="./pages/course/list.html">
 									<i class="iconfont">&#xe6a7;</i>
 									<cite>课程管理</cite>
 								</a>
 							</li>
-							<li>
+							<li id="2-2">
 								<a _href="./pages/article/category.html">
 									<i class="iconfont">&#xe6a7;</i>
 									<cite>分类管理</cite>
@@ -85,14 +85,14 @@
 							</li>
 						</ul>
 					</li>
-					<li>
+					<li id="3">
 						<a href="javascript:;">
 							<i class="iconfont">&#xe723;</i>
 							<cite>班级管理</cite>
 							<i class="iconfont nav_right">&#xe697;</i>
 						</a>
 						<ul class="sub-menu">
-							<li>
+							<li id="3-1">
 								<a _href="./pages/class/list.html">
 									<i class="iconfont">&#xe6a7;</i>
 									<cite>班级管理</cite>
@@ -100,23 +100,23 @@
 							</li>
 						</ul>
 					</li>
-					<li>
+					<li id="4">
 						<a href="javascript:;">
 							<i class="iconfont">&#xe726;</i>
-							<cite>管理员管理</cite>
+							<cite>成绩管理</cite>
 							<i class="iconfont nav_right">&#xe697;</i>
 						</a>
 						<ul class="sub-menu">
-							<li>
-								<a _href="./pages/admin/list.html">
+							<li id="4-1">
+								<a _href="./pages/grades/list.html">
 									<i class="iconfont">&#xe6a7;</i>
-									<cite>管理员列表</cite>
+									<cite>成绩登记</cite>
 								</a>
 							</li>
-							<li>
-								<a _href="./pages/admin/role.html">
+							<li id="4-2">
+								<a _href="./pages/score-check/list.html">
 									<i class="iconfont">&#xe6a7;</i>
-									<cite>角色管理</cite>
+									<cite>成绩查看</cite>
 								</a>
 							</li>
 							<li>
@@ -133,69 +133,7 @@
 							</li>
 						</ul>
 					</li>
-					<li>
-						<a href="javascript:;">
-							<i class="iconfont">&#xe6ce;</i>
-							<cite>系统统计</cite>
-							<i class="iconfont nav_right">&#xe697;</i>
-						</a>
-						<ul class="sub-menu">
-							<li>
-								<a _href="./pages/echarts/echarts1.html">
-									<i class="iconfont">&#xe6a7;</i>
-									<cite>拆线图</cite>
-								</a>
-							</li>
-							<li>
-								<a _href="./pages/echarts/echarts2.html">
-									<i class="iconfont">&#xe6a7;</i>
-									<cite>柱状图</cite>
-								</a>
-							</li>
-							<li>
-								<a _href="./pages/echarts/echarts3.html">
-									<i class="iconfont">&#xe6a7;</i>
-									<cite>地图</cite>
-								</a>
-							</li>
-							<li>
-								<a _href="./pages/echarts/echarts4.html">
-									<i class="iconfont">&#xe6a7;</i>
-									<cite>饼图</cite>
-								</a>
-							</li>
-							<li>
-								<a _href="./pages/echarts/echarts5.html">
-									<i class="iconfont">&#xe6a7;</i>
-									<cite>雷达图</cite>
-								</a>
-							</li>
-							<li>
-								<a _href="./pages/echarts/echarts6.html">
-									<i class="iconfont">&#xe6a7;</i>
-									<cite>k线图</cite>
-								</a>
-							</li>
-							<li>
-								<a _href="./pages/echarts/echarts7.html">
-									<i class="iconfont">&#xe6a7;</i>
-									<cite>热力图</cite>
-								</a>
-							</li>
-							<li>
-								<a _href="./pages/echarts/echarts8.html">
-									<i class="iconfont">&#xe6a7;</i>
-									<cite>仪表图</cite>
-								</a>
-							</li>
-							<li>
-								<a _href="./pages/echarts/echarts9.html">
-									<i class="iconfont">&#xe6a7;</i>
-									<cite>地图DIY实例</cite>
-								</a>
-							</li>
-						</ul>
-					</li>
+
 				</ul>
 			</div>
 		</div>
@@ -232,12 +170,27 @@
 //			layui.use('admin', function(){
 //			  var admin = layui.admin;
 //			});
+
+
 			layui.config({
 			  base: './static/js/'
 			  ,version: '101100'
 			}).use('admin');
 			layui.use(['jquery','admin'], function(){
 				var $ = layui.jquery;
+				var role = localStorage.getItem('role');
+				if(role == 'student'){
+					$('#1').remove()
+					$('#2').remove()
+					$('#3').remove()
+					$('#4-1').remove()
+					// $('#1').remove()
+					// $('#1').remove()
+				}else if(role == 'teacher'){
+
+				}else if(role == 'header'){
+
+				}
 				$("#userName").text(localStorage.getItem('name'))
 				$(function(){
 					$.ajax({
@@ -256,17 +209,6 @@
 							}
 						}
 					});
-					// if(login){
-					// 	if(login=0){
-					// 		window.location.href='./login.html';
-					// 		return false;
-					// 	}else{
-					// 		return false;
-					// 	}
-					// }else{
-					// 	window.location.href='./login.html';
-					// 	return false;
-					// }
 				});
 			});
 

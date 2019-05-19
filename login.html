@@ -60,6 +60,7 @@
                 complete: function (result) {
                     let {code, data, msg} = result.responseJSON;
                     if(code == 0){
+                        localStorage.setItem('id',data.id)
                         localStorage.setItem('role',data.role)
                         localStorage.setItem('name',data.name)
                         localStorage.setItem('token',data.token)

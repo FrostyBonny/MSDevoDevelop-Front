@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<title>会员列表-成绩管理系统</title>
+		<meta name="renderer" content="webkit" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+		<link rel="stylesheet" href="../../static/css/font.css" />
+		<link rel="stylesheet" href="../../static/css/weadmin.css" />
+		<!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+		<!--[if lt IE 9]>
+		  <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+		  <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+		<div class="weadmin-nav">
+			<span class="layui-breadcrumb">
+				<a href="javascript:;">首页</a> <a href="javascript:;">用户管理</a>
+				<a href="javascript:;"> <cite>用户管理</cite></a>
+			</span>
+			<a class="layui-btn layui-btn-sm" style="margin-top:3px;float:right" href="javascript:location.replace(location.href);"
+			 title="刷新">
+				<i class="layui-icon layui-icon-refresh"></i>
+				<!-- <i class="layui-icon" style="line-height:30px">&#x1002;</i> -->
+			</a>
+		</div>
+
+		<div class="weadmin-body">
+			<div class="weadmin-block">
+<!--				<button class="layui-btn layui-btn-danger" onclick="delAll()">-->
+<!--					<i class="layui-icon layui-icon-delete"></i>批量删除-->
+<!--				</button>-->
+
+<!--				<span class="fr" style="line-height:40px">共有数据：88 条</span>-->
+<!--                <button class="layui-btn" onclick="WeAdminAddShow('添加用户','./add.html',600,400)">-->
+<!--                    <i class="layui-icon layui-icon-add-circle-fine"></i>添加-->
+<!--                </button>-->
+			</div>
+			<table id="sc_table" lay-filter="sc_table"></table>
+		</div>
+        <script type="text/html" id="operateTpl">
+            <a title="编辑" lay-event="edit"  href="javascript:;">
+                <i class="layui-icon">&#xe642;</i>
+            </a>
+            <a title="删除" lay-event="del"  href="javascript:;">
+                <i class="layui-icon">&#xe640;</i>
+            </a>
+        </script>
+<!--		<script type="text/html" id="fortest">-->
+<!--			-->
+<!--		</script>-->
+		<!--<script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>-->
+		<script src="../../static/js/utils.js" type="text/javascript"></script>
+		<script src="../../lib/layui/layui.js" charset="utf-8"></script>
+		<script src="../../static/js/eleDel.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			layui.use(['jquery','table'], function(){
+				var table = layui.table
+						,$ = layui.jquery;
+                var retData = {}
+                var retData1 = {}
+                $.ajax({
+                    url: BaseUrl + '/user/user',
+                    method: 'GET',
+                    headers: {
+                        token: localStorage.getItem("token")
+                    },
+                    async:false,
+                    data:{
+                        "type":"all",
+                        "page":1,
+                        "limit":100,
+                    },
+                    complete:function (result) {
+                        var {code, data, msg} = result.responseJSON;
+                        if(code == 0){
+                            retData = data
+                        }else{
+                            layer.msg("获取用户出错");
+                        }
+                    }
+                });
+                $.ajax({
+                    url: BaseUrl + '/course/',
+                    method: 'GET',
+                    headers: {
+                        token: localStorage.getItem("token")
+                    },
+                    async:false,
+                    data:{
+                        "type":"all",
+                        "page":1,
+                        "limit":100,
+                    },
+                    complete:function (result) {
+                        var {code, data, msg} = result.responseJSON;
+                        if(code == 0){
+							retData1 = data
+                        }else{
+                            layer.msg("获取课程出错");
+                        }
+                    }
+                });
+				table.render({
+					elem: '#sc_table'
+					,height: 312
+                    ,cellMinWidth: 80
+                    ,url: BaseUrl + '/sc/' //数据接口
+					,page: true //开启分页
+					,headers: {token: localStorage.getItem('token')}
+					,where: {type:"all"} //如果无需传递额外参数，可不加该参数
+					,method: 'get' //如果无需自定义HTTP类型，可不加该参数
+                    // ,toolbar: true
+					,cols: [[ //表头
+						{field: 'id', title: 'ID', width:80, sort: true}
+						,{field: 'student', title: '学生', templet: function(d){
+							let name = ''
+							for(let i = 0;i < retData.length;i++){
+								if(d.student == retData[i].id){
+									name = retData[i].name
+									break;
+								}
+							}
+							return name
+						}}
+						,{field: 'course', title: '课程', templet: function(d){
+							let name = ''
+							for(let i = 0;i < retData1.length;i++){
+								if(d.course == retData1[i].id){
+									name = retData1[i].name
+									break;
+								}
+							}
+							return name
+						}}
+						,{field: 'score', title: '成绩',edit:"text"}
+						// ,{fixed: 'right', width:178, align:'center', toolbar: '#barDemo'}
+                        // ,{fixed: 'right',title: '操作', width:150, align:'center', toolbar: '#operateTpl'} //这里的toolbar值是模板元素的选择器
+					]]
+				});
+                table.on('tool(sc_table)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+                    var data = obj.data; //获得当前行数据
+                    var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+                    var tr = obj.tr; //获得当前行 tr 的DOM对象
+                    console.log(data)
+                    if(layEvent === 'detail'){ //查看
+                        //do somehing
+                    } else if(layEvent === 'del'){ //删除
+                        layer.confirm('真的删除行么', function(index){
+                            $.ajax({
+                                url: BaseUrl + '/user/user',
+                                method: 'DELETE',
+                                headers: {
+                                    token: localStorage.getItem("token")
+                                },
+                                data:{
+                                    "id":data.id
+                                },
+                                complete:function (result) {
+                                    var {code, data, msg} = result.responseJSON;
+                                    if(code == 0){
+                                        obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
+                                        layer.close(index);
+                                    }
+                                    layer.msg(msg);
+                                }
+                            })
+
+                        });
+                    } else if(layEvent === 'edit'){ //编辑
+                        //do something
+                        WeAdminEdit('编辑','./edit.html', data.id, 600, 400)
+                        //同步更新缓存对应的值
+                        obj.update({
+                            username: '123'
+                            ,title: 'xxx'
+                        });
+                    }
+                });
+				table.on('edit(sc_table)', function(obj){
+					let value = obj.value //得到修改后的值
+							,data = obj.data //得到所在行所有键值
+							,field = obj.field; //得到字段
+					$.ajax({
+						url: BaseUrl + '/sc/',
+						method: 'POST',
+						headers: {
+							token: localStorage.getItem("token")
+						},
+						async:false,
+						data:{
+							"id":data.id,
+							"score":value,
+						},
+						complete:function (result) {
+							var {code, data, msg} = result.responseJSON;
+							if(code == 0){
+								layer.msg('修改成功');
+							}else{
+								layer.msg("修改出错");
+								table.reload('sc_table',{page:{curr:1}})
+							}
+						}
+					});
+				});
+			});
+
+           let member_del = function (obj, id) {
+                layer.confirm('确认要删除吗？', function(index) {
+                    //发异步删除数据
+                    $(obj).parents("tr").remove();
+                    layer.msg('已删除!', {
+                        icon: 1,
+                        time: 1000
+                    });
+                });
+            }
+		</script>
+	</body>
+</html>
